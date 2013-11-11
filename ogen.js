@@ -1,3 +1,7 @@
+var http = require('http')
+var map = require('through2-map')
+var url = require('url')
+
 var objectDefinition = {
   'objectName': 'simpleObject',
   'attributes': [
@@ -68,5 +72,20 @@ function generateObject(objectDefinition) {
   return object;
 }
 
-generateObject(objectDefinition)
+var server = http.createServer(function(request, response) {
 
+  var parsedUrl = url.parse(request.url, true);
+
+  response.writeHead(200, {'Content-Type' : 'application/json'})
+  
+  if (parsedUrl.pathname == '/ogen') {
+  
+    response.write(JSON.stringify(generateObject(objectDefinition)));
+  
+  }
+  
+  response.end();
+  
+});
+
+server.listen(8000);
